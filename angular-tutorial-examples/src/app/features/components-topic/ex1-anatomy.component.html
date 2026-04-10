@@ -1,0 +1,24 @@
+<div class="anatomy-demo">
+  <div class="anatomy-visual">
+    <div class="block block--decorator">&#64;Component(&#123; selector, template, styles &#125;)</div>
+    <div class="block block--class">
+      <span class="kw">export class</span> <span class="cn">UserCardComponent</span> &#123;
+      <div class="indent">
+        <span class="prop">name</span> = signal(<em class="name-val">{{ nameDisplay }}</em>);
+      </div>
+      &#125;
+    </div>
+    <div class="block block--template">
+      <span class="tag">&lt;div&gt;</span>Hello, &#123;&#123; name() &#125;&#125;<span class="tag">&lt;/div&gt;</span>
+    </div>
+  </div>
+  <div class="anatomy-output">
+    <p>Live Output: <strong>Hello, {{ name() }}</strong></p>
+    <input
+      type="text"
+      [value]="name()"
+      (input)="name.set($any($event.target).value)"
+      placeholder="Enter a name..."
+    />
+  </div>
+</div>

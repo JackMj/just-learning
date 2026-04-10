@@ -1,0 +1,37 @@
+<nav class="sidebar">
+  <div class="sidebar__header">
+    <a routerLink="/" class="sidebar__logo">
+      <span class="logo-icon">⬡</span>
+      <div class="logo-text">
+        <span class="logo-title">Angular</span>
+        <span class="logo-sub">Tutorial Examples</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="sidebar__section">
+    <p class="sidebar__section-label">Topics</p>
+    <ul class="sidebar__nav-list">
+      @for (topic of topics(); track topic.id) {
+        <li>
+          <a
+            [routerLink]="topic.route"
+            routerLinkActive="active"
+            class="sidebar__nav-item"
+          >
+            <span class="nav-icon">{{ topic.icon }}</span>
+            <span class="nav-label">{{ topic.title }}</span>
+            <span class="nav-count">{{ topic.exampleCount }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <div class="sidebar__footer">
+    <div class="sidebar__version-badge">
+      <span class="version-dot"></span>
+      Angular v21
+    </div>
+  </div>
+</nav>

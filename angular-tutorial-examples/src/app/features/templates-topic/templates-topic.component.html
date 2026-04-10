@@ -1,0 +1,270 @@
+<div class="topic-page">
+  <header class="topic-header">
+    <p class="topic-label">&#x1F4C4; Topic 2</p>
+    <h1>Templates</h1>
+    <p class="lead">
+      Angular templates are HTML with superpowers. They support interpolation,
+      property/event binding, control flow, and pipes.
+    </p>
+  </header>
+
+  <div class="theory-box">
+    <h4>&#x1F4D6; Theory</h4>
+    <ul>
+      <li><strong>Interpolation</strong> <code>{{ '{{' }} expr {{ '}}' }}</code> — renders dynamic text</li>
+      <li><strong>Property binding</strong> <code>[prop]="expr"</code> — sets DOM properties</li>
+      <li><strong>Event binding</strong> <code>(event)="handler()"</code> — responds to DOM events</li>
+      <li><strong>Two-way binding</strong> <code>[(ngModel)]="prop"</code> — syncs input &#8596; model</li>
+      <li><strong>Control flow</strong> — <code>&#64;if</code>, <code>&#64;for</code>, <code>&#64;switch</code> (Angular 17+)</li>
+      <li><strong>Pipes</strong> — transform display values inline, e.g. <code>| date</code>, <code>| currency</code></li>
+    </ul>
+  </div>
+
+  <section class="topic-section">
+    <h2>Examples</h2>
+
+    <!-- Example 1: Interpolation & Property Binding -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">1</div>
+        <h3>Interpolation &amp; Property Binding</h3>
+      </div>
+      <div class="example-container__body">
+        <p class="example-description">
+          Interpolation renders expressions as text. Property binding sets element properties.
+        </p>
+        <app-code [code]="codeInterpolation" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="binding-demo">
+            <div class="user-card-demo">
+              <div class="avatar" [style.background-color]="avatarColor()">
+                {{ userName().charAt(0).toUpperCase() }}
+              </div>
+              <div>
+                <h4>{{ userName() }}</h4>
+                <p class="score-text">Score: {{ score() }} / 100</p>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="form-group">
+                <label>Name:</label>
+                <input type="text" [value]="userName()" (input)="userName.set($any($event.target).value)" />
+              </div>
+              <div class="form-group">
+                <label>Score (0-100): {{ score() }}</label>
+                <input type="range" min="0" max="100" [value]="score()" (input)="score.set(+$any($event.target).value)" />
+              </div>
+              <div>
+                <span>Status: </span>
+                <span [class]="score() >= 60 ? 'pass' : 'fail'">
+                  {{ score() >= 60 ? '&#x2713; Pass' : '&#x2715; Fail' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2: Event Binding -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">2</div>
+        <h3>Event Binding &amp; Two-Way Binding</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeEvents" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="form-group">
+            <label>Two-way binding with [(ngModel)]:</label>
+            <input type="text" [(ngModel)]="twoWayValue" placeholder="Type something..." />
+          </div>
+          <div class="result-display">
+            Bound value: <strong>{{ twoWayValue }}</strong>
+            &nbsp;|&nbsp; Length: <strong>{{ twoWayValue.length }}</strong>
+          </div>
+          <div class="event-chips-row">
+            @for (event of clickEvents(); track $index) {
+              <span class="event-chip">{{ event }}</span>
+            }
+          </div>
+          <button class="btn btn--accent btn--sm event-btn" (click)="addClickEvent()">
+            Click Me ({{ clickEvents().length }})
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3: Control Flow -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">3</div>
+        <h3>Control Flow: &#64;if, &#64;for, &#64;switch</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeControlFlow" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="role-btns">
+            <button class="btn btn--sm btn--secondary" (click)="cfRole.set('admin')">Admin</button>
+            <button class="btn btn--sm btn--secondary" (click)="cfRole.set('editor')">Editor</button>
+            <button class="btn btn--sm btn--secondary" (click)="cfRole.set('viewer')">Viewer</button>
+          </div>
+          <div class="role-panel">
+            @if (cfRole() === 'admin') {
+              <div class="role-block role-block--admin">&#x1F510; Admin Panel — full access granted</div>
+            } @else if (cfRole() === 'editor') {
+              <div class="role-block role-block--editor">&#x270F;&#xFE0F; Editor Panel — create &amp; edit content</div>
+            } @else {
+              <div class="role-block role-block--viewer">&#x1F441;&#xFE0F; Viewer Panel — read-only access</div>
+            }
+          </div>
+
+          <div class="for-demo">
+            <p class="for-demo__label">
+              &#64;for with &#64;empty:
+            </p>
+            <ul class="item-list">
+              @for (emp of visibleEmployees(); track emp.id) {
+                <li>
+                  <strong>{{ emp.name }}</strong>
+                  &nbsp;— {{ emp.department }}
+                </li>
+              } @empty {
+                <li class="empty-item">No employees found.</li>
+              }
+            </ul>
+            <div class="for-demo__actions">
+              <button class="btn btn--sm btn--secondary" (click)="toggleEmployees()">
+                {{ showEmployees() ? 'Clear' : 'Show' }} Employees
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 4: Pipes -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">4</div>
+        <h3>Built-in &amp; Custom Pipes</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codePipes" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Salary</th>
+                <th>Start Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (emp of employees; track emp.id) {
+                <tr [class.row--inactive]="!emp.active">
+                  <td>{{ emp.name | uppercase }}</td>
+                  <td>{{ emp.department }}</td>
+                  <td>{{ emp.salary | currency:'USD':'symbol':'1.0-0' }}</td>
+                  <td>{{ emp.startDate | date:'mediumDate' }}</td>
+                  <td>
+                    <span [class]="emp.active ? 'status-active' : 'status-inactive'">
+                      {{ emp.active ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="truncate-demo">
+            <p class="truncate-demo__label">Custom truncate pipe:</p>
+            <p class="truncate-demo__value">{{ longText | truncate:60 }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 5: Template Variables -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">5</div>
+        <h3>Template Reference Variables</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeTemplateVars" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="search-row">
+            <input #searchRef type="text" placeholder="Type to filter employees..." class="search-input" />
+            <button class="btn btn--accent btn--sm" (click)="filterEmployees(searchRef.value)">
+              Search
+            </button>
+          </div>
+          <ul class="item-list">
+            @for (emp of filteredEmployees(); track emp.id) {
+              <li>
+                <strong>{{ emp.name }}</strong> — {{ emp.department }}
+              </li>
+            } @empty {
+              <li class="empty-item">No match.</li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 6: Class & Style Bindings -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">6</div>
+        <h3>Dynamic Class &amp; Style Bindings</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeClassStyle" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="style-controls">
+            <div class="form-group">
+              <label>Text Color:</label>
+              <input type="color" [value]="styleColor()" (input)="styleColor.set($any($event.target).value)" class="color-input" />
+            </div>
+            <div class="form-group">
+              <label>Font Size: {{ styleFontSize() }}px</label>
+              <input type="range" min="12" max="36" [value]="styleFontSize()" (input)="styleFontSize.set(+$any($event.target).value)" />
+            </div>
+            <div class="form-group form-group--inline">
+              <label>Bold:</label>
+              <input type="checkbox" [checked]="styleBold()" (change)="styleBold.set($any($event.target).checked)" class="checkbox-input" />
+            </div>
+          </div>
+          <div
+            class="style-preview"
+            [style.color]="styleColor()"
+            [style.font-size.px]="styleFontSize()"
+            [style.font-weight]="styleBold() ? '700' : '400'"
+            [ngClass]="{ 'style-preview--bold': styleBold() }"
+          >
+            Hello, Angular Developers! &#x1F680;
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="exercise-box">
+    <h4>&#x1F3CB;&#xFE0F; Exercises</h4>
+    <ol>
+      <li>Create a <code>ColorPicker</code> component that uses two-way binding to update a live color preview.</li>
+      <li>Build a filterable list using <code>&#64;for</code>, <code>&#64;empty</code>, and a search input with event binding.</li>
+      <li>Implement a <code>RoleSwitcher</code> using <code>&#64;switch</code> to show different panels per role.</li>
+      <li>Write a custom <code>RelativeTimePipe</code> that converts dates to "2 hours ago" style strings.</li>
+      <li>Create a progress bar component with dynamic width using style binding <code>[style.width.%]</code>.</li>
+    </ol>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="star-rating" role="radiogroup" [attr.aria-label]="'Rating: ' + value() + ' out of 5'">
+  @for (star of stars; track star) {
+    <button
+      class="star-btn"
+      [class.star-btn--filled]="star <= value()"
+      [class.star-btn--hover]="star <= hovered()"
+      (click)="value.set(star)"
+      (mouseenter)="hovered.set(star)"
+      (mouseleave)="hovered.set(0)"
+      [attr.aria-label]="star + ' stars'"
+      type="button"
+    >★</button>
+  }
+  <span class="rating-label">{{ value() }}/5</span>
+</div>

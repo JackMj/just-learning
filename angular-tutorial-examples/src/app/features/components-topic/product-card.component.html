@@ -1,0 +1,17 @@
+<div class="product-card" [class.product-card--featured]="featured()">
+  @if (featured()) {
+    <div class="featured-badge">&#11088; Featured</div>
+  }
+  <div class="product-info">
+    <h4>{{ name() }}</h4>
+    <p class="price">${{ price().toFixed(2) }}</p>
+    <div class="rating">
+      @for (star of stars(); track $index) {
+        <span class="star" [class.star--filled]="star">&#9733;</span>
+      }
+    </div>
+  </div>
+  <button class="btn btn--primary btn--sm" (click)="addToCart.emit({ name: name(), price: price() })">
+    Add to Cart
+  </button>
+</div>

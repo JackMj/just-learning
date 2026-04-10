@@ -1,0 +1,45 @@
+.cd-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cd-counter {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--color-surface-3);
+  border-radius: 12px;
+}
+
+.counter-display {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--color-primary-light);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.cd-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cd-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--color-surface-3);
+  border-radius: 8px;
+  font-size: 0.85rem;
+
+  strong {
+    color: var(--color-success);
+  }
+}

@@ -1,0 +1,197 @@
+<div class="topic-page">
+  <header class="topic-header">
+    <p class="topic-label">&#x1F9E9; Topic 1</p>
+    <h1>Components</h1>
+    <p class="lead">
+      Components are the fundamental building blocks of Angular applications.
+      Each component encapsulates a TypeScript class, HTML template, and CSS styles.
+    </p>
+  </header>
+
+  <div class="theory-box">
+    <h4>&#x1F4D6; Theory</h4>
+    <ul>
+      <li>A component is a TypeScript class decorated with <code>&#64;Component()</code></li>
+      <li>The decorator provides <code>selector</code>, <code>template</code>/<code>templateUrl</code>, and <code>styles</code>/<code>styleUrls</code></li>
+      <li>Use <code>ChangeDetectionStrategy.OnPush</code> for performance — only re-renders when inputs change or signals emit</li>
+      <li>In Angular 17+, standalone components are the default — no NgModules needed</li>
+      <li>Use <code>input()</code> / <code>output()</code> signal APIs instead of <code>&#64;Input()</code>/<code>&#64;Output()</code></li>
+    </ul>
+  </div>
+
+  <!-- Examples Section -->
+  <section class="topic-section">
+    <h2>Examples</h2>
+
+    <!-- Example 1 -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">1</div>
+        <h3>Component Anatomy</h3>
+      </div>
+      <div class="example-container__body">
+        <p class="example-description">
+          The three parts of a component: decorator, class, and template. Edit the name below to see reactive updates.
+        </p>
+        <app-code [code]="code1" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <app-ex1-anatomy />
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2 -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">2</div>
+        <h3>Input Signals &amp; Output Events</h3>
+      </div>
+      <div class="example-container__body">
+        <p class="example-description">
+          Use <code>input()</code> for typed, required or optional props. Use <code>output()</code> for events.
+        </p>
+        <app-code [code]="code2" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="product-cards-row">
+            <app-product-card
+              name="Mechanical Keyboard"
+              [price]="149.99"
+              [rating]="5"
+              [featured]="true"
+              (addToCart)="onAddToCart($event)"
+            />
+            <app-product-card
+              name="Wireless Mouse"
+              [price]="59.99"
+              [rating]="4"
+              (addToCart)="onAddToCart($event)"
+            />
+          </div>
+          @if (cartMessage()) {
+            <div class="result-display cart-message">
+              &#x1F6D2; {{ cartMessage() }}
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3 -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">3</div>
+        <h3>Lifecycle Hooks</h3>
+      </div>
+      <div class="example-container__body">
+        <p class="example-description">
+          Angular calls lifecycle hook methods in a specific order. Key hooks: constructor → ngOnInit → ngOnDestroy.
+        </p>
+        <app-code [code]="code3" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — hook log</p>
+          @if (showLifecycleDemo()) {
+            <app-ex3-lifecycle />
+          } @else {
+            <p class="not-mounted">Component not yet mounted.</p>
+          }
+          <div class="lifecycle-controls">
+            <button class="btn btn--primary btn--sm" (click)="showLifecycleDemo.set(true)">Mount Component</button>
+            <button class="btn btn--secondary btn--sm" (click)="showLifecycleDemo.set(false)">Destroy Component</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 4 -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">4</div>
+        <h3>ChangeDetection.OnPush</h3>
+      </div>
+      <div class="example-container__body">
+        <p class="example-description">
+          <code>OnPush</code> is a performance optimization. With signals, Angular only checks this component when signal values change.
+        </p>
+        <app-code [code]="code4" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <app-ex4-change-detection />
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 5 -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">5</div>
+        <h3>Content Projection with ng-content</h3>
+      </div>
+      <div class="example-container__body">
+        <p class="example-description">
+          <code>ng-content</code> enables composition patterns. Use named slots for structured content projection.
+        </p>
+        <app-code [code]="code5" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <button class="btn btn--primary btn--sm" (click)="modalRef.open()">Open Modal</button>
+          <app-modal-shell #modalRef>
+            <h3 slot="title">Content Projection Demo</h3>
+            <p>This content is projected into the modal body via <code>ng-content</code>.</p>
+            <p class="modal-note">
+              Each slot maps to a different <code>ng-content select</code> in the modal shell.
+            </p>
+            <div slot="footer">
+              <button class="btn btn--secondary btn--sm" (click)="modalRef.closeModal()">Cancel</button>
+              <button class="btn btn--primary btn--sm" (click)="modalRef.closeModal()">Confirm</button>
+            </div>
+          </app-modal-shell>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 6 -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">6</div>
+        <h3>Host Bindings &amp; Semantic HTML</h3>
+      </div>
+      <div class="example-container__body">
+        <p class="example-description">
+          Use the <code>host</code> option in <code>&#64;Component</code> to bind classes, attributes and ARIA to the host element directly.
+        </p>
+        <app-code [code]="code6" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="status-row">
+            <app-status-indicator status="online" />
+            <app-status-indicator status="offline" />
+            <app-status-indicator status="busy" />
+          </div>
+          <div class="status-selector">
+            <span class="status-selector__label">Selected:</span>
+            <button class="btn btn--sm btn--secondary" (click)="selectedStatus.set('online')">Online</button>
+            <button class="btn btn--sm btn--secondary" (click)="selectedStatus.set('offline')">Offline</button>
+            <button class="btn btn--sm btn--secondary" (click)="selectedStatus.set('busy')">Busy</button>
+          </div>
+          <div class="dynamic-status-row">
+            <app-status-indicator [status]="selectedStatus()" />
+            <span class="dynamic-status-label">Dynamic status</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="exercise-box">
+    <h4>&#x1F3CB;&#xFE0F; Exercises</h4>
+    <ol>
+      <li>Create a <code>UserCardComponent</code> with inputs for <code>name</code>, <code>email</code>, <code>role</code>, and an output <code>profileClicked</code>.</li>
+      <li>Add a <code>ngOnInit</code> hook that logs when the component mounts and a <code>ngOnDestroy</code> that logs cleanup.</li>
+      <li>Build a reusable <code>AccordionComponent</code> using content projection with a <code>[slot=header]</code> named slot.</li>
+      <li>Apply <code>ChangeDetectionStrategy.OnPush</code> to all of the above and verify they still update correctly.</li>
+      <li>Add host bindings to the <code>UserCardComponent</code> to apply a CSS class based on the user's role.</li>
+    </ol>
+  </div>
+</div>

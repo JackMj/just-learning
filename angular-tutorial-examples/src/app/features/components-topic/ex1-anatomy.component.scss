@@ -1,0 +1,62 @@
+.anatomy-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.anatomy-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.block {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+
+  &--decorator {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+  }
+
+  &--class {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: #93c5fd;
+  }
+
+  &--template {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #86efac;
+  }
+}
+
+.indent {
+  padding-left: 1.5rem;
+}
+
+.kw { color: #c084fc; }
+.cn { color: #67e8f9; }
+.prop { color: #fbbf24; }
+.str { color: #86efac; }
+.tag { color: #f87171; }
+
+.anatomy-output {
+  background: var(--color-surface-3);
+  border-radius: 8px;
+  padding: 1rem;
+
+  p {
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+
+  strong {
+    color: var(--color-primary-light);
+  }
+}

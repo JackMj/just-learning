@@ -1,0 +1,194 @@
+<div class="topic-page">
+  <header class="topic-header">
+    <p class="topic-label">⏳ Topic 8</p>
+    <h1>Deferrable Views</h1>
+    <p class="lead">
+      Angular's <code>&#64;defer</code> block lazily loads components and their dependencies,
+      improving initial load time without any webpack configuration.
+    </p>
+  </header>
+
+  <div class="theory-box">
+    <h4>📖 Theory</h4>
+    <ul>
+      <li><code>&#64;defer</code> — marks content to be lazily loaded into a separate JS chunk</li>
+      <li><code>&#64;placeholder</code> — shown before deferred content starts loading</li>
+      <li><code>&#64;loading</code> — shown while deferred content is being fetched</li>
+      <li><code>&#64;error</code> — shown if deferred content fails to load</li>
+      <li><strong>Triggers</strong>: <code>on idle</code>, <code>on viewport</code>, <code>on interaction</code>, <code>on hover</code>, <code>on immediate</code>, <code>when expr</code></li>
+      <li><code>minimum</code> on <code>&#64;loading</code> prevents loading flicker for fast connections</li>
+      <li><code>prefetch</code> pre-loads the JS chunk without rendering yet</li>
+    </ul>
+  </div>
+
+  <section class="topic-section">
+    <h2>Examples</h2>
+
+    <!-- Example 1: Basic @defer -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">1</div>
+        <h3>Basic &#64;defer with &#64;placeholder and &#64;loading</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet1" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — always-deferred chart</p>
+          @defer {
+            <app-heavy-chart />
+          } @placeholder {
+            <div class="placeholder-block">
+              <div class="placeholder-icon">📊</div>
+              <span>Chart placeholder — waiting to load</span>
+            </div>
+          } @loading (minimum 200ms) {
+            <div class="loading-block">
+              <div class="spinner"></div>
+              <span>Loading chart module...</span>
+            </div>
+          } @error {
+            <div class="error-block">Failed to load chart</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2: on interaction trigger -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">2</div>
+        <h3>Trigger: on interaction</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet2" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — load on interaction</p>
+          <button #loadTableBtn class="btn btn--primary btn--sm">
+            Click to Load Data Table
+          </button>
+          @defer (on interaction(loadTableBtn)) {
+            <div class="deferred-content">
+              <app-heavy-table />
+            </div>
+          } @placeholder {
+            <div class="placeholder-block deferred-content">
+              <span>Click the button above — table will load on interaction</span>
+            </div>
+          } @loading {
+            <div class="loading-block deferred-content">
+              <div class="spinner"></div>
+              <span>Loading...</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3: on hover trigger -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">3</div>
+        <h3>Trigger: on hover</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet3" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — load on hover</p>
+          @defer (on hover(hoverCard)) {
+            <div class="hover-loaded">
+              <h4>Hover Content Loaded! 🎉</h4>
+              <p>This content was loaded when you hovered the card below.</p>
+              <app-heavy-chart />
+            </div>
+          } @placeholder {
+            <div #hoverCard class="hover-placeholder">
+              <span class="hover-icon">👆</span>
+              <span>Hover over this card to load the chart</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 4: when condition trigger -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">4</div>
+        <h3>Trigger: when (condition-based)</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet4" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — when condition</p>
+          <div class="condition-toggle">
+            <button
+              class="btn btn--sm"
+              [class.btn--primary]="conditionMet()"
+              [class.btn--secondary]="!conditionMet()"
+              (click)="conditionMet.update(v => !v)"
+            >{{ conditionMet() ? '✓ Condition: true' : '○ Condition: false' }}</button>
+            <span class="condition-hint">Toggle to load/unload</span>
+          </div>
+          @defer (when conditionMet()) {
+            <div class="condition-loaded">
+              <div class="condition-badge">⚡ Loaded because condition = true</div>
+              <app-heavy-table />
+            </div>
+          } @placeholder {
+            <div class="placeholder-block">
+              <span>Content will load when the condition becomes <strong>true</strong></span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 5: on viewport trigger -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">5</div>
+        <h3>Trigger: on viewport (Intersection Observer)</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet5" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — viewport trigger</p>
+          <div class="scroll-zone">
+            <p class="scroll-hint">
+              Scroll down within this box ↓
+            </p>
+            <div class="scroll-content">
+              @defer (on viewport) {
+                <div class="viewport-loaded">
+                  ✓ Viewport trigger fired — content loaded!
+                  <app-heavy-chart />
+                </div>
+              } @placeholder {
+                <div class="viewport-placeholder">
+                  <div class="vp-icon">👁️</div>
+                  <span>Content deferred until viewport</span>
+                </div>
+              } @loading {
+                <div class="loading-block">
+                  <div class="spinner"></div>
+                  Loading viewport content...
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="exercise-box">
+    <h4>🏋️ Exercises</h4>
+    <ol>
+      <li>Wrap a heavy comment section in <code>&#64;defer (on viewport)</code> and add meaningful <code>&#64;placeholder</code> and <code>&#64;loading</code> blocks.</li>
+      <li>Build a "Show More" button that triggers deferred content loading with <code>on interaction</code>.</li>
+      <li>Implement a feature-flag gated <code>&#64;defer (when featureEnabled())</code> to conditionally load a beta component.</li>
+      <li>Use <code>prefetch on idle</code> to pre-download a module before the user needs it, then render with <code>on interaction</code>.</li>
+      <li>Combine <code>&#64;defer</code> with <code>&#64;placeholder (minimum 500ms)</code> to prevent layout shift and loading flicker.</li>
+    </ol>
+  </div>
+</div>

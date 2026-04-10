@@ -1,0 +1,207 @@
+<div class="topic-page">
+  <header class="topic-header">
+    <p class="topic-label">⚡ Topic 3</p>
+    <h1>Signals</h1>
+    <p class="lead">
+      Angular Signals are a reactive primitive that simplify state management
+      and enable fine-grained change detection without Zone.js overhead.
+    </p>
+  </header>
+
+  <div class="theory-box">
+    <h4>📖 Theory</h4>
+    <ul>
+      <li><code>signal(value)</code> — creates a writable reactive value; read it by calling it: <code>mySignal()</code></li>
+      <li><code>computed(() =&gt; expr)</code> — derives a new signal; re-evaluates lazily when dependencies change</li>
+      <li><code>effect(() =&gt; ...)</code> — runs a side effect whenever tracked signals change</li>
+      <li><code>input()</code> / <code>input.required()</code> — signal-based component inputs (Angular 17.1+)</li>
+      <li><code>model()</code> — two-way bindable signal (Angular 17.2+)</li>
+      <li>Use <code>untracked()</code> to read signals inside an effect without creating a dependency</li>
+      <li>Signals integrate with <code>OnPush</code> for optimal performance — no markForCheck needed</li>
+    </ul>
+  </div>
+
+  <section class="topic-section">
+    <h2>Examples</h2>
+
+    <!-- Example 1: Creating & Updating Signals -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">1</div>
+        <h3>Creating &amp; Updating Signals (set, update)</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSignal1" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo</p>
+          <div class="signal-playground">
+            <div class="sig-display">
+              <div class="sig-value">{{ counterSignal() }}</div>
+              <div class="sig-label">count signal</div>
+            </div>
+            <div class="sig-controls">
+              <button class="btn btn--secondary btn--sm" (click)="counterSignal.update(n => n - 1)">− Decrement</button>
+              <button class="btn btn--primary btn--sm" (click)="counterSignal.update(n => n + 1)">+ Increment</button>
+              <button class="btn btn--secondary btn--sm" (click)="counterSignal.set(0)">Reset</button>
+              <button class="btn btn--accent btn--sm" (click)="counterSignal.set(100)">Set 100</button>
+            </div>
+            <div class="status-row">
+              <span class="status-label">Status:</span>
+              <button class="btn btn--sm btn--secondary" (click)="statusSignal.set('online')">Online</button>
+              <button class="btn btn--sm btn--secondary" (click)="statusSignal.set('offline')">Offline</button>
+              <span class="status-chip" [class.status-chip--online]="statusSignal() === 'online'">
+                {{ statusSignal() }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2: Readonly Exposure & Service State -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">2</div>
+        <h3>Signal-based Service State (TaskService)</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSignal2" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — TaskService state</p>
+          <div class="task-stats">
+            <div class="task-stat">
+              <span class="stat-val">{{ taskSvc.taskStats().total }}</span>
+              <span class="stat-lbl">Total</span>
+            </div>
+            <div class="task-stat">
+              <span class="stat-val stat-val--success">{{ taskSvc.taskStats().completed }}</span>
+              <span class="stat-lbl">Done</span>
+            </div>
+            <div class="task-stat">
+              <span class="stat-val stat-val--warning">{{ taskSvc.taskStats().pending }}</span>
+              <span class="stat-lbl">Pending</span>
+            </div>
+            <div class="task-stat">
+              <span class="stat-val stat-val--primary">{{ taskSvc.completionPercentage() }}%</span>
+              <span class="stat-lbl">Done %</span>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="taskSvc.completionPercentage()"></div>
+          </div>
+          <ul class="task-list">
+            @for (task of taskSvc.tasks(); track task.id) {
+              <li class="task-item" [class.task-item--done]="task.completed">
+                <input type="checkbox" [checked]="task.completed" (change)="taskSvc.toggleTask(task.id)" />
+                <span>{{ task.title }}</span>
+                <span class="task-priority task-priority--{{ task.priority }}">{{ task.priority }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3: computed() -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">3</div>
+        <h3>computed() — Derived Reactive State</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSignal3" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — Shopping Cart with computed()</p>
+          <app-cart-demo />
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 4: effect() -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">4</div>
+        <h3>effect() — Reactive Side Effects</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSignal4" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — effect() for theme persistence</p>
+          <app-effect-demo />
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 5: model() two-way signal -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">5</div>
+        <h3>model() — Two-Way Bindable Signal Inputs</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSignal5" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — star rating with model()</p>
+          <div class="rating-demo">
+            <div>
+              <p class="rating-prompt">Rate this tutorial:</p>
+              <app-star-rating [(value)]="parentRating" />
+            </div>
+            <div class="result-display">
+              Parent signal value: <strong>{{ parentRating() }}/5</strong>
+              @if (parentRating() === 5) { <span> — Thanks! ⭐</span> }
+              @if (parentRating() === 0) { <span class="not-rated"> — Not rated yet</span> }
+            </div>
+            <button class="btn btn--secondary btn--sm reset-btn" (click)="parentRating.set(0)">Reset Rating</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 6: input() signal -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">6</div>
+        <h3>input() — Signal-based Component Inputs</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSignal6" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — input() signal interactions</p>
+          <div class="form-group input-demo-group">
+            <label>Name:</label>
+            <input type="text" [value]="inputDemoName()" (input)="inputDemoName.set($any($event.target).value)" />
+          </div>
+          <div class="form-group">
+            <label>Role:</label>
+            <div class="role-btns">
+              @for (r of roles; track r) {
+                <button class="btn btn--sm" [class.btn--primary]="inputDemoRole() === r" [class.btn--secondary]="inputDemoRole() !== r" (click)="inputDemoRole.set(r)">{{ r }}</button>
+              }
+            </div>
+          </div>
+          <div class="user-badge-demo">
+            <div class="badge-avatar" [class]="'badge-avatar--' + inputDemoRole()">
+              {{ inputDemoName().split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?' }}
+            </div>
+            <div>
+              <strong>{{ inputDemoName() || 'Enter a name' }}</strong>
+              <span class="role-tag role-tag--{{ inputDemoRole() }}">{{ inputDemoRole() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="exercise-box">
+    <h4>🏋️ Exercises</h4>
+    <ol>
+      <li>Create a <code>CounterComponent</code> with <code>signal()</code> and expose computed signals for doubled, squared values.</li>
+      <li>Build a shopping cart service using signals and add computed signals for total price, item count, and discount.</li>
+      <li>Write an <code>effect()</code> that persists the cart to <code>localStorage</code> whenever it changes, and use <code>untracked</code> for logging.</li>
+      <li>Implement a <code>RangeInputComponent</code> using <code>model()</code> for two-way binding.</li>
+      <li>Create a <code>SearchBoxComponent</code> using <code>input.required()</code> for the placeholder and an output signal for search events.</li>
+    </ol>
+  </div>
+</div>

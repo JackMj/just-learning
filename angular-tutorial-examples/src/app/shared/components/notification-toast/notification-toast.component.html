@@ -1,0 +1,17 @@
+<div class="toast-container" aria-live="polite">
+  @for (notif of notifications(); track notif.id) {
+    <div
+      class="toast"
+      [ngClass]="'toast--' + notif.type"
+      role="alert"
+    >
+      <span class="toast__icon">{{ iconFor(notif.type) }}</span>
+      <span class="toast__message">{{ notif.message }}</span>
+      <button
+        class="toast__close"
+        (click)="dismiss(notif.id)"
+        aria-label="Dismiss notification"
+      >✕</button>
+    </div>
+  }
+</div>

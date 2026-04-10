@@ -1,0 +1,53 @@
+.lifecycle-log {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.log-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-entry {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+
+  &--constructor {
+    background: rgba(139, 92, 246, 0.1);
+    border-left: 3px solid #8b5cf6;
+  }
+
+  &--ngOnInit {
+    background: rgba(34, 197, 94, 0.1);
+    border-left: 3px solid #22c55e;
+  }
+
+  &--ngOnDestroy {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 3px solid #ef4444;
+  }
+}
+
+.hook-name {
+  font-weight: 700;
+  width: 120px;
+  flex-shrink: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+}
+
+.hook-msg {
+  flex: 1;
+  color: var(--color-text-secondary);
+}
+
+.hook-time {
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+}

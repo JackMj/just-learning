@@ -1,0 +1,304 @@
+<div class="topic-page">
+  <header class="topic-header">
+    <p class="topic-label">📝 Topic 6</p>
+    <h1>Forms</h1>
+    <p class="lead">
+      Angular provides two form strategies: template-driven for simple cases,
+      and reactive forms for complex validation, dynamic controls, and testability.
+    </p>
+  </header>
+
+  <div class="theory-box">
+    <h4>📖 Theory</h4>
+    <ul>
+      <li><strong>Template-driven</strong> — uses <code>NgModel</code> and directives; simpler but less explicit</li>
+      <li><strong>Reactive Forms</strong> — model-driven with <code>FormBuilder</code>, <code>FormGroup</code>, <code>FormControl</code>, <code>FormArray</code></li>
+      <li>Use <code>Validators.compose()</code> or array syntax for multiple validators per control</li>
+      <li>Cross-field validators: apply on <code>FormGroup</code> level</li>
+      <li>Async validators for server-side checks (e.g. email already taken)</li>
+      <li><code>FormArray</code> for dynamic, repeating form groups (e.g. multi-address)</li>
+      <li>Angular v17+ supports experimental signal-based forms via <code>FormField</code></li>
+    </ul>
+  </div>
+
+  <section class="topic-section">
+    <h2>Examples</h2>
+
+    <!-- Example 1: Template-Driven -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">1</div>
+        <h3>Template-Driven Form</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet1" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — template-driven contact form</p>
+          <form #contactForm="ngForm" class="form" (ngSubmit)="submitContact(contactForm.value, !!contactForm.valid)">
+            <div class="form-group" [class.has-error]="contactName.invalid && contactName.touched">
+              <label>Full Name *</label>
+              <input name="name" ngModel required minlength="2" #contactName="ngModel" placeholder="Your name" />
+              @if (contactName.invalid && contactName.touched) {
+                <span class="error-message">Name is required (min 2 chars)</span>
+              }
+            </div>
+            <div class="form-group" [class.has-error]="contactEmail.invalid && contactEmail.touched">
+              <label>Email *</label>
+              <input name="email" ngModel required email #contactEmail="ngModel" placeholder="you@example.com" />
+              @if (contactEmail.invalid && contactEmail.touched) {
+                <span class="error-message">Valid email is required</span>
+              }
+            </div>
+            <div class="form-group">
+              <label>Message *</label>
+              <textarea name="message" ngModel required minlength="10" #contactMsg="ngModel" placeholder="Your message..."></textarea>
+              @if (contactMsg.invalid && contactMsg.touched) {
+                <span class="error-message">Message needs at least 10 characters</span>
+              }
+            </div>
+            <button class="btn btn--primary" type="submit" [disabled]="contactForm.invalid">Send Message</button>
+          </form>
+          @if (contactSubmitted()) {
+            <div class="success-banner">✓ Message sent! (template-driven form)</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2: Reactive Form Basics -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">2</div>
+        <h3>Reactive Forms with FormBuilder</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet2" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — reactive login form</p>
+          <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="form">
+            <div class="form-group" [class.has-error]="loginEmailCtrl.invalid && loginEmailCtrl.touched">
+              <label>Email</label>
+              <input type="email" formControlName="email" placeholder="admin@example.com" />
+              @if (loginEmailCtrl.hasError('required') && loginEmailCtrl.touched) {
+                <span class="error-message">Email is required</span>
+              }
+              @if (loginEmailCtrl.hasError('email') && loginEmailCtrl.touched) {
+                <span class="error-message">Must be a valid email</span>
+              }
+            </div>
+            <div class="form-group" [class.has-error]="loginPasswordCtrl.invalid && loginPasswordCtrl.touched">
+              <label>Password</label>
+              <input type="password" formControlName="password" placeholder="Min 8 chars" />
+              @if (loginPasswordCtrl.invalid && loginPasswordCtrl.touched) {
+                <span class="error-message">Password must be at least 8 characters</span>
+              }
+            </div>
+            <div class="remember-me-row">
+              <input type="checkbox" formControlName="rememberMe" id="remember" class="checkbox-input" />
+              <label for="remember" class="remember-label">Remember me</label>
+            </div>
+            <div class="submit-row">
+              <button class="btn btn--primary" type="submit" [disabled]="loginForm.invalid">Sign In</button>
+              <span class="form-status">
+                Status: <strong [class]="loginForm.valid ? 'text-success' : 'text-error'">
+                  {{ loginForm.valid ? 'Valid' : 'Invalid' }}
+                </strong>
+              </span>
+            </div>
+          </form>
+          @if (loginSubmitted()) {
+            <div class="success-banner">✓ Logged in as: {{ loginForm.get('email')?.value }}</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3: Custom Validators & Cross-Field Validation -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">3</div>
+        <h3>Custom Validators & Cross-Field Validation</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet3" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — register form with custom validation</p>
+          <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="form">
+            <div class="two-col">
+              <div class="form-group" [class.has-error]="regCtrl('firstName').invalid && regCtrl('firstName').touched">
+                <label>First Name</label>
+                <input formControlName="firstName" placeholder="Jane" />
+                @if (regCtrl('firstName').invalid && regCtrl('firstName').touched) {
+                  <span class="error-message">Required</span>
+                }
+              </div>
+              <div class="form-group" [class.has-error]="regCtrl('lastName').invalid && regCtrl('lastName').touched">
+                <label>Last Name</label>
+                <input formControlName="lastName" placeholder="Doe" />
+                @if (regCtrl('lastName').invalid && regCtrl('lastName').touched) {
+                  <span class="error-message">Required</span>
+                }
+              </div>
+            </div>
+            <div class="form-group" [class.has-error]="regCtrl('email').invalid && regCtrl('email').touched">
+              <label>Email</label>
+              <input type="email" formControlName="email" placeholder="jane@example.com" />
+              @if (regCtrl('email').invalid && regCtrl('email').touched) {
+                <span class="error-message">Valid email required</span>
+              }
+            </div>
+            <div class="form-group" [class.has-error]="regCtrl('password').invalid && regCtrl('password').touched">
+              <label>Password</label>
+              <input type="password" formControlName="password" placeholder="Use Abc123!@" />
+              @if (regCtrl('password').hasError('passwordStrength') && regCtrl('password').touched) {
+                <div class="password-hints">
+                  <span [class]="regCtrl('password').errors?.['passwordStrength'].hasUpper ? 'hint-ok' : 'hint-fail'">uppercase</span>
+                  <span [class]="regCtrl('password').errors?.['passwordStrength'].hasLower ? 'hint-ok' : 'hint-fail'">lowercase</span>
+                  <span [class]="regCtrl('password').errors?.['passwordStrength'].hasDigit ? 'hint-ok' : 'hint-fail'">digit</span>
+                  <span [class]="regCtrl('password').errors?.['passwordStrength'].hasSpecial ? 'hint-ok' : 'hint-fail'">special (!@#$)</span>
+                </div>
+              }
+            </div>
+            <div class="form-group" [class.has-error]="regCtrl('confirmPassword').touched && registerForm.hasError('passwordMismatch')">
+              <label>Confirm Password</label>
+              <input type="password" formControlName="confirmPassword" placeholder="Repeat password" />
+              @if (registerForm.hasError('passwordMismatch') && regCtrl('confirmPassword').touched) {
+                <span class="error-message">Passwords do not match</span>
+              }
+            </div>
+            <button class="btn btn--primary" type="submit" [disabled]="registerForm.invalid">Create Account</button>
+          </form>
+          @if (registerSubmitted()) {
+            <div class="success-banner">✓ Account created for {{ registerForm.get('email')?.value }}</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 4: FormArray -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">4</div>
+        <h3>FormArray — Dynamic Form Controls</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet4" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — resume skills builder</p>
+          <form [formGroup]="skillsForm" (ngSubmit)="submitSkills()" class="form">
+            <div class="form-group">
+              <label>Developer Name</label>
+              <input formControlName="name" placeholder="Your name" />
+            </div>
+            <div class="form-group">
+              <label>Skills</label>
+              <div formArrayName="skills" class="skills-array">
+                @for (skill of skillsArray.controls; track $index) {
+                  <div class="skill-row">
+                    <input [formControlName]="$index" placeholder="e.g. Angular" class="skill-input" />
+                    <button type="button" class="btn btn--sm btn--secondary" (click)="removeSkill($index)">✕</button>
+                  </div>
+                }
+              </div>
+              <button type="button" class="btn btn--sm btn--accent add-skill-btn" (click)="addSkill()">+ Add Skill</button>
+            </div>
+            <button class="btn btn--primary" type="submit" [disabled]="skillsForm.invalid">Save Profile</button>
+          </form>
+          @if (skillsSubmitted()) {
+            <div class="result-display skills-result">
+              <strong>{{ skillsForm.get('name')?.value }}</strong>'s skills:
+              {{ skillsArray.value.join(', ') }}
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 5: Form State & Pending/Dirty/Touched -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">5</div>
+        <h3>Form State — pristine, dirty, touched, pending</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet5" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — form state inspector</p>
+          <form [formGroup]="stateForm" class="form">
+            <div class="form-group">
+              <label>Name</label>
+              <input formControlName="name" placeholder="Type something..." />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" formControlName="email" placeholder="Click and leave..." />
+            </div>
+          </form>
+          <div class="state-grid">
+            @for (prop of formStateProps; track prop.key) {
+              <div class="state-chip" [class.state-chip--true]="getFormState(prop.key)">
+                <span class="state-val">{{ getFormState(prop.key) ? 'T' : 'F' }}</span>
+                <span>{{ prop.key }}</span>
+              </div>
+            }
+          </div>
+          <div class="state-actions">
+            <button class="btn btn--sm btn--secondary" (click)="stateForm.markAllAsTouched()">markAllAsTouched()</button>
+            <button class="btn btn--sm btn--secondary" (click)="stateForm.reset()">reset()</button>
+            <button class="btn btn--sm btn--secondary" (click)="stateForm.get('name')?.disable()">disable name</button>
+            <button class="btn btn--sm btn--secondary" (click)="stateForm.get('name')?.enable()">enable name</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 6: Typed Forms -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">6</div>
+        <h3>Strictly Typed Forms (Angular 14+)</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet6" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — strictly typed profile form</p>
+          <form [formGroup]="typedProfileForm" (ngSubmit)="submitProfile()" class="form">
+            <div class="form-group">
+              <label>Username</label>
+              <input formControlName="username" placeholder="john_doe" />
+            </div>
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" formControlName="age" placeholder="25" />
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <select formControlName="role">
+                <option value="admin">Admin</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
+              </select>
+            </div>
+            <button class="btn btn--primary" type="submit">Save</button>
+          </form>
+          @if (profileResult()) {
+            <div class="result-display profile-result">
+              Typed value: <code>{{ profileResult() | json }}</code>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="exercise-box">
+    <h4>🏋️ Exercises</h4>
+    <ol>
+      <li>Build a template-driven form for a newsletter signup with email and frequency (radio buttons).</li>
+      <li>Create a reactive checkout form with shipping address, payment method, and order summary.</li>
+      <li>Write a custom async validator that simulates checking if an email is already registered.</li>
+      <li>Build an experience timeline using <code>FormArray</code> where users can add/remove job entries.</li>
+      <li>Implement a multi-step wizard form using <code>FormGroup</code> per step with validation gating.</li>
+    </ol>
+  </div>
+</div>

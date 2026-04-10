@@ -1,0 +1,11 @@
+<div class="lifecycle-log">
+  <ul class="log-list">
+    @for (entry of log(); track entry.timestamp) {
+      <li class="log-entry" [class]="'log-entry--' + entry.hook">
+        <span class="hook-name">{{ entry.hook }}</span>
+        <span class="hook-msg">{{ entry.message }}</span>
+        <span class="hook-time">{{ entry.timestamp }}</span>
+      </li>
+    }
+  </ul>
+</div>

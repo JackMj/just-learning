@@ -1,0 +1,248 @@
+<div class="topic-page">
+  <header class="topic-header">
+    <p class="topic-label">🗺️ Topic 5</p>
+    <h1>Routing</h1>
+    <p class="lead">
+      Angular Router handles navigation between views, provides route parameters,
+      lazy loading, guards and resolvers.
+    </p>
+  </header>
+
+  <div class="theory-box">
+    <h4>📖 Theory</h4>
+    <ul>
+      <li><code>provideRouter(routes)</code> in <code>app.config.ts</code> — standalone app router setup</li>
+      <li><code>RouterLink</code> / <code>RouterLinkActive</code> — declarative navigation</li>
+      <li><code>Router.navigate()</code> / <code>navigateByUrl()</code> — programmatic navigation</li>
+      <li><code>ActivatedRoute</code> — access route params, query params, data, and state</li>
+      <li><strong>Lazy loading</strong> — <code>loadComponent</code> or <code>loadChildren</code> splits bundles</li>
+      <li><strong>Route Guards</strong> — <code>canActivate</code>, <code>canMatch</code>, <code>canDeactivate</code></li>
+      <li><strong>Resolvers</strong> — pre-fetch data before a route activates</li>
+      <li>Use <code>withComponentInputBinding()</code> so route params map to component inputs</li>
+    </ul>
+  </div>
+
+  <section class="topic-section">
+    <h2>Examples</h2>
+
+    <!-- Example 1: Route Definition -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">1</div>
+        <h3>Route Definition & provideRouter()</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet1" />
+        <div class="demo-area">
+          <p class="demo-label">Route tree visualization</p>
+          <div class="route-tree">
+            @for (route of routeTree; track route.path) {
+              <div class="route-node" [style.padding-left.rem]="route.depth * 1.5">
+                <span class="route-icon">{{ route.icon }}</span>
+                <code>/{{ route.path }}</code>
+                @if (route.guard) {
+                  <span class="route-badge route-badge--guard">🔒 {{ route.guard }}</span>
+                }
+                @if (route.lazy) {
+                  <span class="route-badge route-badge--lazy">⚡ lazy</span>
+                }
+                @if (route.note) {
+                  <span class="route-note">{{ route.note }}</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2: RouterLink & RouterLinkActive -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">2</div>
+        <h3>RouterLink, RouterLinkActive & queryParams</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet2" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — mock navigation bar</p>
+          <nav class="mock-nav">
+            @for (topic of navLinks; track topic.path) {
+              <a
+                [routerLink]="topic.path"
+                routerLinkActive="mock-nav__item--active"
+                [routerLinkActiveOptions]="{ exact: topic.exact ?? false }"
+                class="mock-nav__item"
+              >{{ topic.label }}</a>
+            }
+          </nav>
+          <div class="nav-btns">
+            <button class="btn btn--sm btn--primary" (click)="router.navigate(['/components'])">Navigate to Components</button>
+            <button class="btn btn--sm btn--secondary" (click)="router.navigate(['/signals'])">Navigate to Signals</button>
+            <button class="btn btn--sm btn--accent" (click)="router.navigate(['/'], { queryParams: { section: 'examples' } })">Home + queryParams</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3: Route Parameters -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">3</div>
+        <h3>Route Parameters & withComponentInputBinding()</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet3" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — simulating route params</p>
+          <div class="param-demo">
+            <div class="param-controls">
+              <p class="param-controls__label">Select a "user" to navigate to:</p>
+              <div class="param-controls__btns">
+                @for (user of demoUsers; track user.id) {
+                  <button
+                    class="btn btn--sm"
+                    [class.btn--primary]="selectedUserId() === user.id"
+                    [class.btn--secondary]="selectedUserId() !== user.id"
+                    (click)="selectedUserId.set(user.id)"
+                  >{{ user.name }}</button>
+                }
+              </div>
+            </div>
+            @if (selectedUser()) {
+              <div class="user-detail-card">
+                <div class="user-avatar">{{ selectedUser()!.name.charAt(0) }}</div>
+                <div>
+                  <strong>{{ selectedUser()!.name }}</strong>
+                  <p>{{ selectedUser()!.email }}</p>
+                  <code class="user-path">/users/{{ selectedUser()!.id }}</code>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 4: Route Guards -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">4</div>
+        <h3>Route Guards — canActivate & canDeactivate</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet4" />
+        <div class="demo-area">
+          <p class="demo-label">Live Demo — guard simulator</p>
+          <div class="guard-demo">
+            <div class="auth-toggle">
+              <span class="auth-label">Authenticated:</span>
+              <button
+                class="btn btn--sm"
+                [class.btn--primary]="isAuthenticated()"
+                [class.btn--secondary]="!isAuthenticated()"
+                (click)="isAuthenticated.update(v => !v)"
+              >{{ isAuthenticated() ? '✓ Yes' : '✕ No' }}</button>
+            </div>
+            <div class="routes-list">
+              @for (scenario of guardScenarios; track scenario.path) {
+                <div class="guard-route">
+                  <code>/{{ scenario.path }}</code>
+                  @if (scenario.protected) {
+                    <span class="guard-lock">🔒 Protected</span>
+                  }
+                  <button
+                    class="btn btn--sm btn--accent"
+                    (click)="tryNavigate(scenario)"
+                  >Navigate</button>
+                  @if (navigationResults()[scenario.path]) {
+                    <span [class]="navigationResults()[scenario.path] === 'allowed' ? 'nav-allowed' : 'nav-blocked'">
+                      {{ navigationResults()[scenario.path] === 'allowed' ? '✓ Allowed' : '✕ Blocked → /login' }}
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 5: Lazy Loading -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">5</div>
+        <h3>Lazy Loading — loadComponent & loadChildren</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet5" />
+        <div class="demo-area">
+          <p class="demo-label">Bundle splitting visualization</p>
+          <div class="bundle-viz">
+            <div class="bundle main-bundle">
+              <div class="bundle-label">main.js (~120kb)</div>
+              <div class="bundle-modules">
+                <span>AppComponent</span>
+                <span>HomeComponent</span>
+                <span>Router</span>
+                <span>Core Services</span>
+              </div>
+            </div>
+            <div class="bundle-separator">⚡ Loaded on demand</div>
+            <div class="lazy-bundles">
+              @for (bundle of lazyBundles; track bundle.name) {
+                <div class="bundle lazy-bundle" [class.loaded]="loadedBundles().includes(bundle.name)" (click)="simulateLoad(bundle.name)">
+                  <div class="bundle-label">{{ bundle.file }}</div>
+                  <div class="bundle-size">{{ bundle.size }}</div>
+                  <div class="bundle-status">
+                    {{ loadedBundles().includes(bundle.name) ? '✓ Loaded' : 'Click to load' }}
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 6: Resolvers & Data Binding -->
+    <div class="example-container">
+      <div class="example-container__header">
+        <div class="example-number">6</div>
+        <h3>Route Resolvers & Title Strategy</h3>
+      </div>
+      <div class="example-container__body">
+        <app-code [code]="codeSnippet6" />
+        <div class="demo-area">
+          <p class="demo-label">Resolver simulation</p>
+          <div class="resolve-btns">
+            @for (user of demoUsers; track user.id) {
+              <button class="btn btn--sm btn--secondary" (click)="simulateResolve(user.id)">
+                Resolve User {{ user.id }}
+              </button>
+            }
+          </div>
+          @if (resolveState() === 'loading') {
+            <div class="resolve-state resolve-state--loading">⏳ Fetching user data...</div>
+          } @else if (resolveState() === 'done' && resolvedUser()) {
+            <div class="resolve-state resolve-state--success">
+              ✓ Resolved: <strong>{{ resolvedUser()!.name }}</strong> ({{ resolvedUser()!.email }})
+              <br /><small>Page title set to: "User #{{ resolvedUser()!.id }}"</small>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="exercise-box">
+    <h4>🏋️ Exercises</h4>
+    <ol>
+      <li>Define a route config with nested child routes, a wildcard <code>**</code> route, and a redirect.</li>
+      <li>Enable <code>withComponentInputBinding()</code> and bind a route param directly to a component <code>input()</code>.</li>
+      <li>Write a functional <code>authGuard</code> that redirects to <code>/login</code> with a <code>returnUrl</code> query param.</li>
+      <li>Lazy-load a feature module using <code>loadChildren</code> and verify it creates a separate JS chunk.</li>
+      <li>Implement a functional resolver that fetches data and expose it as a signal using <code>toSignal()</code>.</li>
+    </ol>
+  </div>
+</div>
