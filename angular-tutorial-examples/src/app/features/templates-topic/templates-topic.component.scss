@@ -1,0 +1,22 @@
+
+    .binding-demo { display: flex; flex-direction: column; gap: 1rem; }
+    .user-card-demo { display: flex; align-items: center; gap: 1rem; background: var(--color-surface-3); border-radius: 10px; padding: 1rem; }
+    .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; color: white; flex-shrink: 0; }
+    .pass { color: var(--color-success); font-weight: 600; }
+    .fail { color: var(--color-error); font-weight: 600; }
+    .event-chip { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #60a5fa; border-radius: 20px; padding: 2px 10px; font-size: 0.75rem; }
+    .role-panel { }
+    .role-block { padding: 12px 16px; border-radius: 10px; font-weight: 500; font-size: 0.9rem; }
+    .role-block--admin { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+    .role-block--editor { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+    .role-block--viewer { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); color: #60a5fa; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .data-table th { text-align: left; padding: 8px 10px; color: var(--color-text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--color-border); }
+    .data-table td { padding: 8px 10px; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); }
+    .data-table tr:hover td { background: var(--color-surface-3); }
+    .row--inactive td { opacity: 0.5; }
+    .status-active { color: var(--color-success); font-weight: 500; }
+    .status-inactive { color: var(--color-text-muted); }
+    .style-controls { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+    .style-preview { padding: 1.5rem; background: var(--color-surface-3); border-radius: 10px; transition: all 0.2s; }
+  

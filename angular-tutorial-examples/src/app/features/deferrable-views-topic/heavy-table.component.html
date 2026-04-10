@@ -1,0 +1,21 @@
+
+    <div class="table-demo">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Name</th><th>Score</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows; track row.id) {
+            <tr>
+              <td>{{ row.id }}</td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.score }}</td>
+              <td><span [class]="'chip chip--' + row.status">{{ row.status }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  
