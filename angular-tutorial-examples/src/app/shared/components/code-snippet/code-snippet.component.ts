@@ -8,26 +8,8 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-code',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<pre><code [innerHTML]="escaped()"></code></pre>`,
-  styles: [`
-    pre {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: 1.25rem 1.5rem;
-      overflow-x: auto;
-      line-height: 1.6;
-      margin: 1rem 0;
-    }
-    code {
-      background: none;
-      border: none;
-      padding: 0;
-      color: #e2e8f0;
-      font-size: 0.85rem;
-      font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-    }
-  `],
+  templateUrl: './code-snippet.component.html',
+  styleUrl: './code-snippet.component.scss',
 })
 export class CodeSnippetComponent {
   readonly code = input.required<string>();
