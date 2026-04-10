@@ -21,9 +21,9 @@ import { CodeSnippetComponent } from '../../shared/components/code-snippet/code-
   selector: 'app-cart-demo',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [DecimalPipe],
   templateUrl: './cart-demo.component.html',
   styleUrl: './cart-demo.component.scss',
-  imports: [DecimalPipe],
 })
 export class CartDemoComponent {
   private _items = signal([

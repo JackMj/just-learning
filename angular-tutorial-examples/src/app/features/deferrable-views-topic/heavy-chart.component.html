@@ -1,12 +1,14 @@
-<div class="chart-demo">
-  <div class="chart-header">📊 Interactive Chart (heavy component)</div>
-  <div class="chart-bars">
-    @for (bar of bars; track bar.label) {
-      <div class="chart-bar-container">
-        <div class="chart-bar" [style.height.px]="bar.value * 2" [style.background]="bar.color"></div>
-        <span class="bar-label">{{ bar.label }}</span>
-        <span class="bar-value">{{ bar.value }}</span>
+
+    <div class="chart-demo">
+      <div class="chart-header">📊 Interactive Chart (heavy component)</div>
+      <div class="chart-bars">
+        @for (bar of bars; track bar.label) {
+          <div class="chart-bar-container">
+            <div class="chart-bar" [style.height.px]="bar.value * 2" [style.background]="bar.color"></div>
+            <span class="bar-label">{{ bar.label }}</span>
+            <span class="bar-value">{{ bar.value }}</span>
+          </div>
+        }
       </div>
-    }
-  </div>
-</div>
+    </div>
+  

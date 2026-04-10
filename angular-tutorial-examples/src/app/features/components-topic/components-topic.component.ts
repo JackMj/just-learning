@@ -157,7 +157,6 @@ export class StatusIndicatorComponent {
     StatusIndicatorComponent,
   ],
   templateUrl: './components-topic.component.html',
-  styleUrl: './components-topic.component.scss',
 })
 export class ComponentsTopicComponent {
   readonly cartMessage = signal<string>('');

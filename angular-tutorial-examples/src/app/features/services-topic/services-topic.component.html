@@ -1,245 +1,247 @@
-<div class="topic-page">
-  <header class="topic-header">
-    <p class="topic-label">🔧 Topic 4</p>
-    <h1>Services & Dependency Injection</h1>
-    <p class="lead">
-      Angular's DI system provides services to components and other services.
-      Use <code>inject()</code> for cleaner injection without constructor boilerplate.
-    </p>
-  </header>
 
-  <div class="theory-box">
-    <h4>📖 Theory</h4>
-    <ul>
-      <li><code>@Injectable({{ '{' }} providedIn: 'root' {{ '}' }})</code> — singleton, tree-shakeable</li>
-      <li><code>inject(Token)</code> — functional injection, works in constructor context and in computed/effect</li>
-      <li><code>InjectionToken&lt;T&gt;</code> — provides non-class tokens (config objects, primitives)</li>
-      <li><code>providers: []</code> in component — component-scoped instance (not shared globally)</li>
-      <li><strong>Hierarchical DI</strong> — child injectors inherit from parent; override at any level</li>
-      <li>Prefer <code>inject()</code> over constructor injection for consistency and testability</li>
-    </ul>
-  </div>
+    <div class="topic-page">
+      <header class="topic-header">
+        <p class="topic-label">🔧 Topic 4</p>
+        <h1>Services & Dependency Injection</h1>
+        <p class="lead">
+          Angular's DI system provides services to components and other services.
+          Use <code>inject()</code> for cleaner injection without constructor boilerplate.
+        </p>
+      </header>
 
-  <section class="topic-section">
-    <h2>Examples</h2>
-
-    <!-- Example 1: inject() function -->
-    <div class="example-container">
-      <div class="example-container__header">
-        <div class="example-number">1</div>
-        <h3>inject() — Functional Dependency Injection</h3>
+      <div class="theory-box">
+        <h4>📖 Theory</h4>
+        <ul>
+          <li><code>@Injectable({{ '{' }} providedIn: 'root' {{ '}' }})</code> — singleton, tree-shakeable</li>
+          <li><code>inject(Token)</code> — functional injection, works in constructor context and in computed/effect</li>
+          <li><code>InjectionToken&lt;T&gt;</code> — provides non-class tokens (config objects, primitives)</li>
+          <li><code>providers: []</code> in component — component-scoped instance (not shared globally)</li>
+          <li><strong>Hierarchical DI</strong> — child injectors inherit from parent; override at any level</li>
+          <li>Prefer <code>inject()</code> over constructor injection for consistency and testability</li>
+        </ul>
       </div>
-      <div class="example-container__body">
-        <app-code [code]="codeSnippet1" />
-        <div class="demo-area">
-          <p class="demo-label">Live Demo — inject() with multiple services</p>
-          <div class="service-demo">
-            <div class="service-item">
-              <span class="service-icon">🔔</span>
-              <div>
-                <strong>NotificationService</strong>
-                <p>{{ notifCount() }} active notifications</p>
-              </div>
-              <div class="service-item__actions">
-                <button class="btn btn--sm btn--primary" (click)="notifSvc.success('Operation succeeded!')">Success</button>
-                <button class="btn btn--sm btn--secondary" (click)="notifSvc.error('Something went wrong')">Error</button>
-                <button class="btn btn--sm btn--accent" (click)="notifSvc.info('FYI: new update')">Info</button>
+
+      <section class="topic-section">
+        <h2>Examples</h2>
+
+        <!-- Example 1: inject() function -->
+        <div class="example-container">
+          <div class="example-container__header">
+            <div class="example-number">1</div>
+            <h3>inject() — Functional Dependency Injection</h3>
+          </div>
+          <div class="example-container__body">
+            <app-code [code]="codeSnippet1" />
+            <div class="demo-area">
+              <p class="demo-label">Live Demo — inject() with multiple services</p>
+              <div class="service-demo">
+                <div class="service-item">
+                  <span class="service-icon">🔔</span>
+                  <div>
+                    <strong>NotificationService</strong>
+                    <p>{{ notifCount() }} active notifications</p>
+                  </div>
+                  <div style="display: flex; gap: 0.4rem;">
+                    <button class="btn btn--sm btn--primary" (click)="notifSvc.success('Operation succeeded!')">Success</button>
+                    <button class="btn btn--sm btn--secondary" (click)="notifSvc.error('Something went wrong')">Error</button>
+                    <button class="btn btn--sm btn--accent" (click)="notifSvc.info('FYI: new update')">Info</button>
+                  </div>
+                </div>
+                <div class="service-item">
+                  <span class="service-icon">🛍️</span>
+                  <div>
+                    <strong>ProductService</strong>
+                    <p>{{ productSvc.filteredProducts().length }} / {{ productSvc.products().length }} products visible</p>
+                  </div>
+                  <div style="display: flex; gap: 0.4rem; align-items: center;">
+                    <input type="text" style="width: 150px; font-size: 0.8rem; padding: 6px 10px;"
+                      placeholder="Search products..."
+                      (input)="productSvc.searchQuery.set($any($event.target).value)"
+                    />
+                    <button class="btn btn--sm btn--secondary" (click)="productSvc.searchQuery.set('')">Clear</button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="service-item">
-              <span class="service-icon">🛍️</span>
-              <div>
-                <strong>ProductService</strong>
-                <p>{{ productSvc.filteredProducts().length }} / {{ productSvc.products().length }} products visible</p>
+          </div>
+        </div>
+
+        <!-- Example 2: Service with signal state -->
+        <div class="example-container">
+          <div class="example-container__header">
+            <div class="example-number">2</div>
+            <h3>CounterService — Singleton Signal State</h3>
+          </div>
+          <div class="example-container__body">
+            <app-code [code]="codeSnippet2" />
+            <div class="demo-area">
+              <p class="demo-label">Live Demo — shared singleton across components</p>
+              <div class="counter-grid">
+                @for (i of [1,2,3]; track i) {
+                  <div class="counter-instance">
+                    <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Instance {{ i }} — same service</p>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary-light); text-align: center; margin-bottom: 0.5rem;">
+                      {{ counterSvc.value() }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--color-text-secondary); text-align: center; margin-bottom: 0.75rem;">
+                      × 2 = {{ counterSvc.doubled() }} &nbsp;|&nbsp; {{ counterSvc.isEven() ? 'even' : 'odd' }}
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; justify-content: center;">
+                      <button class="btn btn--sm btn--secondary" (click)="counterSvc.decrement()">−</button>
+                      <button class="btn btn--sm btn--primary" (click)="counterSvc.increment()">+</button>
+                    </div>
+                  </div>
+                }
               </div>
-              <div class="service-item__actions">
-                <input type="text" class="search-input"
-                  placeholder="Search products..."
+              <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.75rem; text-align: center;">
+                All 3 instances read from the SAME singleton service — changes propagate everywhere.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 3: InjectionToken -->
+        <div class="example-container">
+          <div class="example-container__header">
+            <div class="example-number">3</div>
+            <h3>InjectionToken — Typed Configuration</h3>
+          </div>
+          <div class="example-container__body">
+            <app-code [code]="codeSnippet3" />
+            <div class="demo-area">
+              <p class="demo-label">Live Demo — InjectionToken config</p>
+              <div class="config-display">
+                <div class="config-item">
+                  <code>apiUrl</code>
+                  <span>{{ config.apiUrl }}</span>
+                </div>
+                <div class="config-item">
+                  <code>maxRetries</code>
+                  <span>{{ config.maxRetries }}</span>
+                </div>
+                <div class="config-item">
+                  <code>featureFlags.darkMode</code>
+                  <span [class]="config.featureFlags.darkMode ? 'flag-on' : 'flag-off'">
+                    {{ config.featureFlags.darkMode ? 'enabled' : 'disabled' }}
+                  </span>
+                </div>
+                <div class="config-item">
+                  <code>featureFlags.betaFeatures</code>
+                  <span [class]="config.featureFlags.betaFeatures ? 'flag-on' : 'flag-off'">
+                    {{ config.featureFlags.betaFeatures ? 'enabled' : 'disabled' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 4: Logger Service (non-root, component-scoped) -->
+        <div class="example-container">
+          <div class="example-container__header">
+            <div class="example-number">4</div>
+            <h3>LoggerService — Component-Scoped Provider</h3>
+          </div>
+          <div class="example-container__body">
+            <app-code [code]="codeSnippet4" />
+            <div class="demo-area">
+              <p class="demo-label">Live Demo — component-scoped logger</p>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                @for (action of logActions; track action.label) {
+                  <button class="btn btn--sm btn--secondary"
+                    (click)="logger[action.level](action.label)"
+                  >{{ action.label }}</button>
+                }
+              </div>
+              <div class="logger-view">
+                @for (entry of logger.logs(); track entry.timestamp) {
+                  <div class="log-row log-row--{{ entry.level }}">
+                    <span class="log-level">{{ entry.level }}</span>
+                    <span class="log-msg">{{ entry.message }}</span>
+                    <span class="log-ts">{{ entry.timestamp | date:'HH:mm:ss' }}</span>
+                  </div>
+                } @empty {
+                  <p style="color: var(--color-text-muted); font-size: 0.85rem; text-align: center; padding: 1rem;">No logs yet. Click actions above.</p>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 5: useFactory provider -->
+        <div class="example-container">
+          <div class="example-container__header">
+            <div class="example-number">5</div>
+            <h3>Provider Patterns: useValue, useClass, useFactory, useExisting</h3>
+          </div>
+          <div class="example-container__body">
+            <app-code [code]="codeSnippet5" />
+            <div class="demo-area">
+              <p class="demo-label">Provider Pattern Summary</p>
+              <div class="provider-table">
+                @for (pattern of providerPatterns; track pattern.name) {
+                  <div class="provider-row">
+                    <code>{{ pattern.name }}</code>
+                    <span>{{ pattern.useCase }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 6: ProductService - real world usage -->
+        <div class="example-container">
+          <div class="example-container__header">
+            <div class="example-number">6</div>
+            <h3>ProductService — Real-World Service Pattern</h3>
+          </div>
+          <div class="example-container__body">
+            <app-code [code]="codeSnippet6" />
+            <div class="demo-area">
+              <p class="demo-label">Live Demo — ProductService with filtering</p>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                <input type="text" placeholder="Search products..." style="flex: 1; min-width: 180px;"
+                  [value]="productSvc.searchQuery()"
                   (input)="productSvc.searchQuery.set($any($event.target).value)"
                 />
-                <button class="btn btn--sm btn--secondary" (click)="productSvc.searchQuery.set('')">Clear</button>
+                <select (change)="productSvc.selectedCategory.set($any($event.target).value)">
+                  @for (cat of productSvc.categories(); track cat) {
+                    <option [value]="cat">{{ cat | titlecase }}</option>
+                  }
+                </select>
               </div>
+              <div class="product-list">
+                @for (product of productSvc.filteredProducts().slice(0, 4); track product.id) {
+                  <div class="product-row">
+                    <span class="product-name">{{ product.name }}</span>
+                    <span class="product-cat">{{ product.category }}</span>
+                    <span class="product-price">\${{ product.price.toFixed(2) }}</span>
+                    <span class="product-stock" [class.in-stock]="product.inStock">
+                      {{ product.inStock ? '✓' : '✕' }}
+                    </span>
+                  </div>
+                } @empty {
+                  <p style="text-align: center; color: var(--color-text-muted); padding: 1rem; font-size: 0.85rem;">No products match.</p>
+                }
+              </div>
+              <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.5rem;">
+                Showing {{ productSvc.filteredProducts().length }} of {{ productSvc.products().length }} products
+              </p>
             </div>
           </div>
         </div>
+      </section>
+
+      <div class="exercise-box">
+        <h4>🏋️ Exercises</h4>
+        <ol>
+          <li>Create a <code>ThemeService</code> with a signal for current theme and a method to toggle between light/dark/system.</li>
+          <li>Define an <code>InjectionToken</code> for an <code>FeatureFlags</code> config object and inject it in a component.</li>
+          <li>Build a <code>CartService</code> that provides a component-scoped cart and a root-scoped order history service.</li>
+          <li>Implement a <code>useFactory</code> provider that creates a service instance conditionally based on environment.</li>
+          <li>Write a <code>LoggerService</code> that uses <code>withContext()</code> to create scoped loggers and injects <code>APP_CONFIG</code> for log level.</li>
+        </ol>
       </div>
     </div>
-
-    <!-- Example 2: Service with signal state -->
-    <div class="example-container">
-      <div class="example-container__header">
-        <div class="example-number">2</div>
-        <h3>CounterService — Singleton Signal State</h3>
-      </div>
-      <div class="example-container__body">
-        <app-code [code]="codeSnippet2" />
-        <div class="demo-area">
-          <p class="demo-label">Live Demo — shared singleton across components</p>
-          <div class="counter-grid">
-            @for (i of [1,2,3]; track i) {
-              <div class="counter-instance">
-                <p class="counter-instance__label">Instance {{ i }} — same service</p>
-                <div class="counter-instance__value">
-                  {{ counterSvc.value() }}
-                </div>
-                <div class="counter-instance__derived">
-                  × 2 = {{ counterSvc.doubled() }} &nbsp;|&nbsp; {{ counterSvc.isEven() ? 'even' : 'odd' }}
-                </div>
-                <div class="counter-instance__controls">
-                  <button class="btn btn--sm btn--secondary" (click)="counterSvc.decrement()">−</button>
-                  <button class="btn btn--sm btn--primary" (click)="counterSvc.increment()">+</button>
-                </div>
-              </div>
-            }
-          </div>
-          <p class="singleton-note">
-            All 3 instances read from the SAME singleton service — changes propagate everywhere.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Example 3: InjectionToken -->
-    <div class="example-container">
-      <div class="example-container__header">
-        <div class="example-number">3</div>
-        <h3>InjectionToken — Typed Configuration</h3>
-      </div>
-      <div class="example-container__body">
-        <app-code [code]="codeSnippet3" />
-        <div class="demo-area">
-          <p class="demo-label">Live Demo — InjectionToken config</p>
-          <div class="config-display">
-            <div class="config-item">
-              <code>apiUrl</code>
-              <span>{{ config.apiUrl }}</span>
-            </div>
-            <div class="config-item">
-              <code>maxRetries</code>
-              <span>{{ config.maxRetries }}</span>
-            </div>
-            <div class="config-item">
-              <code>featureFlags.darkMode</code>
-              <span [class]="config.featureFlags.darkMode ? 'flag-on' : 'flag-off'">
-                {{ config.featureFlags.darkMode ? 'enabled' : 'disabled' }}
-              </span>
-            </div>
-            <div class="config-item">
-              <code>featureFlags.betaFeatures</code>
-              <span [class]="config.featureFlags.betaFeatures ? 'flag-on' : 'flag-off'">
-                {{ config.featureFlags.betaFeatures ? 'enabled' : 'disabled' }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Example 4: Logger Service (non-root, component-scoped) -->
-    <div class="example-container">
-      <div class="example-container__header">
-        <div class="example-number">4</div>
-        <h3>LoggerService — Component-Scoped Provider</h3>
-      </div>
-      <div class="example-container__body">
-        <app-code [code]="codeSnippet4" />
-        <div class="demo-area">
-          <p class="demo-label">Live Demo — component-scoped logger</p>
-          <div class="log-actions">
-            @for (action of logActions; track action.label) {
-              <button class="btn btn--sm btn--secondary"
-                (click)="logger[action.level](action.label)"
-              >{{ action.label }}</button>
-            }
-          </div>
-          <div class="logger-view">
-            @for (entry of logger.logs(); track entry.timestamp) {
-              <div class="log-row log-row--{{ entry.level }}">
-                <span class="log-level">{{ entry.level }}</span>
-                <span class="log-msg">{{ entry.message }}</span>
-                <span class="log-ts">{{ entry.timestamp | date:'HH:mm:ss' }}</span>
-              </div>
-            } @empty {
-              <p class="logger-empty">No logs yet. Click actions above.</p>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Example 5: useFactory provider -->
-    <div class="example-container">
-      <div class="example-container__header">
-        <div class="example-number">5</div>
-        <h3>Provider Patterns: useValue, useClass, useFactory, useExisting</h3>
-      </div>
-      <div class="example-container__body">
-        <app-code [code]="codeSnippet5" />
-        <div class="demo-area">
-          <p class="demo-label">Provider Pattern Summary</p>
-          <div class="provider-table">
-            @for (pattern of providerPatterns; track pattern.name) {
-              <div class="provider-row">
-                <code>{{ pattern.name }}</code>
-                <span>{{ pattern.useCase }}</span>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Example 6: ProductService - real world usage -->
-    <div class="example-container">
-      <div class="example-container__header">
-        <div class="example-number">6</div>
-        <h3>ProductService — Real-World Service Pattern</h3>
-      </div>
-      <div class="example-container__body">
-        <app-code [code]="codeSnippet6" />
-        <div class="demo-area">
-          <p class="demo-label">Live Demo — ProductService with filtering</p>
-          <div class="product-filters">
-            <input type="text" placeholder="Search products..." class="product-search"
-              [value]="productSvc.searchQuery()"
-              (input)="productSvc.searchQuery.set($any($event.target).value)"
-            />
-            <select (change)="productSvc.selectedCategory.set($any($event.target).value)">
-              @for (cat of productSvc.categories(); track cat) {
-                <option [value]="cat">{{ cat | titlecase }}</option>
-              }
-            </select>
-          </div>
-          <div class="product-list">
-            @for (product of productSvc.filteredProducts().slice(0, 4); track product.id) {
-              <div class="product-row">
-                <span class="product-name">{{ product.name }}</span>
-                <span class="product-cat">{{ product.category }}</span>
-                <span class="product-price">${{ product.price.toFixed(2) }}</span>
-                <span class="product-stock" [class.in-stock]="product.inStock">
-                  {{ product.inStock ? '✓' : '✕' }}
-                </span>
-              </div>
-            } @empty {
-              <p class="product-empty">No products match.</p>
-            }
-          </div>
-          <p class="product-count">
-            Showing {{ productSvc.filteredProducts().length }} of {{ productSvc.products().length }} products
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="exercise-box">
-    <h4>🏋️ Exercises</h4>
-    <ol>
-      <li>Create a <code>ThemeService</code> with a signal for current theme and a method to toggle between light/dark/system.</li>
-      <li>Define an <code>InjectionToken</code> for an <code>FeatureFlags</code> config object and inject it in a component.</li>
-      <li>Build a <code>CartService</code> that provides a component-scoped cart and a root-scoped order history service.</li>
-      <li>Implement a <code>useFactory</code> provider that creates a service instance conditionally based on environment.</li>
-      <li>Write a <code>LoggerService</code> that uses <code>withContext()</code> to create scoped loggers and injects <code>APP_CONFIG</code> for log level.</li>
-    </ol>
-  </div>
-</div>
+  

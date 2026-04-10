@@ -1,24 +1,26 @@
-<div class="cd-demo">
-  <div class="cd-counter">
-    <div class="counter-display">{{ count() }}</div>
-    <p>OnPush component only re-renders when signal changes</p>
-  </div>
-  <div class="cd-controls">
-    <button class="btn btn--primary btn--sm" (click)="increment()">+ Increment</button>
-    <button class="btn btn--secondary btn--sm" (click)="reset()">Reset</button>
-  </div>
-  <div class="cd-info">
-    <div class="info-row">
-      <span>Change Detection Strategy:</span>
-      <code>OnPush</code>
+
+    <div class="cd-demo">
+      <div class="cd-counter">
+        <div class="counter-display">{{ count() }}</div>
+        <p>OnPush component only re-renders when signal changes</p>
+      </div>
+      <div class="cd-controls">
+        <button class="btn btn--primary btn--sm" (click)="increment()">+ Increment</button>
+        <button class="btn btn--secondary btn--sm" (click)="reset()">Reset</button>
+      </div>
+      <div class="cd-info">
+        <div class="info-row">
+          <span>Change Detection Strategy:</span>
+          <code>OnPush</code>
+        </div>
+        <div class="info-row">
+          <span>State Management:</span>
+          <code>signal()</code>
+        </div>
+        <div class="info-row">
+          <span>Render count:</span>
+          <strong>{{ renderCount }}</strong>
+        </div>
+      </div>
     </div>
-    <div class="info-row">
-      <span>State Management:</span>
-      <code>signal()</code>
-    </div>
-    <div class="info-row">
-      <span>Render count:</span>
-      <strong>{{ renderCount }}</strong>
-    </div>
-  </div>
-</div>
+  
