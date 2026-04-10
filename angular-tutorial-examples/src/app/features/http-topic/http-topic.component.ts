@@ -154,7 +154,6 @@ export class HttpTopicComponent implements OnInit {
   readonly todoItems = computed((): Todo[] => this.todosResource.value() ?? []);
 
   ngOnInit(): void {
-    // Auto-load posts on init
     this.loadPosts();
   }
 

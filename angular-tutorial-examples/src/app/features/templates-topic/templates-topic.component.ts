@@ -11,8 +11,6 @@ import {
   DatePipe,
   CurrencyPipe,
   UpperCasePipe,
-
-
 } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CodeSnippetComponent } from '../../shared/components/code-snippet/code-snippet.component';
@@ -45,8 +43,6 @@ interface Employee {
     DatePipe,
     CurrencyPipe,
     UpperCasePipe,
-  
-  
     FormsModule,
     TruncatePipe,
     CodeSnippetComponent,
