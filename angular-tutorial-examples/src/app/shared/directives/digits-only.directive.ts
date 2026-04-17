@@ -61,35 +61,38 @@ export class DigitsOnlyDirective {
   // ── Paste ────────────────────────────────────────────────────────────────────
 
   /**
-   * Strip non-digits from pasted text and insert only the cleaned value.
-   * Without this, a user could paste "12.5" and bypass the keydown guard.
+   * Reject the paste entirely when the clipboard text contains any non-digit
+   * character. Silently stripping (e.g. turning "12.5" into "125") would
+   * produce a different number without the user realising, which is confusing.
+   * An all-or-nothing approach mirrors how the keydown guard works.
    */
   @HostListener('paste', ['$event'])
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
 
     const raw = event.clipboardData?.getData('text') ?? '';
-    const digits = raw.replace(/\D/g, '');
+    if (/\D/.test(raw)) return;
 
-    this.insertAtCursor(digits);
+    this.insertAtCursor(raw);
     this.syncControl();
   }
 
   // ── Drop ─────────────────────────────────────────────────────────────────────
 
   /**
-   * Strip non-digits from drag-dropped text for the same reason as paste.
+   * Reject the drop entirely when the dragged text contains any non-digit
+   * character, for the same reason as onPaste.
    */
   @HostListener('drop', ['$event'])
   onDrop(event: DragEvent): void {
     event.preventDefault();
 
     const raw = event.dataTransfer?.getData('text') ?? '';
-    const digits = raw.replace(/\D/g, '');
+    if (/\D/.test(raw)) return;
 
     const input = this.el.nativeElement as HTMLInputElement;
     input.focus();
-    input.value = digits;
+    input.value = raw;
     this.syncControl();
   }
 

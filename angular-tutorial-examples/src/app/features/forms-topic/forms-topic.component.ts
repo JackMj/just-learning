@@ -289,21 +289,23 @@ export class DigitsOnlyDirective {
     if (!isDigit && !isControl && !isShortcut) event.preventDefault();
   }
 
-  // 2. Strip non-digits from pasted text
+  // 2. Reject paste if it contains any non-digit (e.g. "12.5" → blocked entirely)
   @HostListener('paste', ['$event'])
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
-    const digits = (event.clipboardData?.getData('text') ?? '').replace(/\\D/g, '');
-    this.insertAtCursor(digits);
+    const raw = event.clipboardData?.getData('text') ?? '';
+    if (/\\D/.test(raw)) return;   // decimal / letter → do nothing
+    this.insertAtCursor(raw);
     this.syncControl();
   }
 
-  // 3. Strip non-digits from drag-dropped text
+  // 3. Reject drop if it contains any non-digit
   @HostListener('drop', ['$event'])
   onDrop(event: DragEvent): void {
     event.preventDefault();
-    const digits = (event.dataTransfer?.getData('text') ?? '').replace(/\\D/g, '');
-    (this.el.nativeElement as HTMLInputElement).value = digits;
+    const raw = event.dataTransfer?.getData('text') ?? '';
+    if (/\\D/.test(raw)) return;   // decimal / letter → do nothing
+    (this.el.nativeElement as HTMLInputElement).value = raw;
     this.syncControl();
   }
 
