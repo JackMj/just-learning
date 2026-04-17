@@ -1,4 +1,5 @@
 import { CodeSnippetComponent } from '../../shared/components/code-snippet/code-snippet.component';
+import { DigitsOnlyDirective } from '../../shared/directives/digits-only.directive';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -55,7 +56,7 @@ function futureDate(control: AbstractControl): ValidationErrors | null {
   selector: 'app-forms-topic',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, JsonPipe, CodeSnippetComponent],
+  imports: [ReactiveFormsModule, FormsModule, JsonPipe, CodeSnippetComponent, DigitsOnlyDirective],
   templateUrl: './forms-topic.component.html',
   styleUrl: './forms-topic.component.scss',
 })
@@ -160,6 +161,24 @@ export class FormsTopicComponent {
     return this.stateForm[key as FormKey] as boolean;
   }
 
+  /* Ex 7 — digits-only directive */
+  readonly digitsForm = this.fb.group({
+    quantity: [null as number | null, [Validators.required, Validators.min(1)]],
+    postalCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
+  });
+  get quantityCtrl() { return this.digitsForm.get('quantity')!; }
+  get postalCtrl()   { return this.digitsForm.get('postalCode')!; }
+  readonly digitsSubmitted = signal<Record<string, unknown> | null>(null);
+  submitDigits(): void {
+    if (this.digitsForm.valid) {
+      this.digitsSubmitted.set(this.digitsForm.getRawValue());
+      this.notif.success('Order placed!');
+      setTimeout(() => this.digitsSubmitted.set(null), 4000);
+    } else {
+      this.digitsForm.markAllAsTouched();
+    }
+  }
+
   /* ── Code snippets ── */
   readonly codeSnippet1 = `// Import FormsModule in component
 import { FormsModule } from '@angular/forms';
@@ -248,6 +267,85 @@ form.markAllAsTouched();
 
 // Reset form
 form.reset({ email: '' });`;
+  readonly codeSnippet7 = `// digits-only.directive.ts  (standalone, drop-in)
+@Directive({ selector: '[appDigitsOnly]', standalone: true })
+export class DigitsOnlyDirective {
+  private readonly el = inject(ElementRef);
+  private readonly ngControl = inject(NgControl, { optional: true, self: true });
+
+  // Mobile browsers show numeric keypad
+  @HostBinding('attr.inputmode') readonly inputmode = 'numeric';
+  @HostBinding('attr.pattern')   readonly pattern   = '[0-9]*';
+
+  // 1. Block at keydown — character never enters the DOM
+  @HostListener('keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    const { key, ctrlKey, metaKey } = event;
+    const isDigit    = /^\\d$/.test(key);
+    const isControl  = ['Backspace','Delete','Tab','Escape','Enter',
+                        'ArrowLeft','ArrowRight','Home','End'].includes(key);
+    const isShortcut = (ctrlKey || metaKey) &&
+                       ['a','c','v','x','z'].includes(key.toLowerCase());
+    if (!isDigit && !isControl && !isShortcut) event.preventDefault();
+  }
+
+  // 2. Reject paste if it contains any non-digit (e.g. "12.5" → blocked entirely)
+  @HostListener('paste', ['$event'])
+  onPaste(event: ClipboardEvent): void {
+    event.preventDefault();
+    const raw = event.clipboardData?.getData('text') ?? '';
+    if (/\\D/.test(raw)) return;   // decimal / letter → do nothing
+    this.insertAtCursor(raw);
+    this.syncControl();
+  }
+
+  // 3. Reject drop if it contains any non-digit
+  @HostListener('drop', ['$event'])
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    const raw = event.dataTransfer?.getData('text') ?? '';
+    if (/\\D/.test(raw)) return;   // decimal / letter → do nothing
+    (this.el.nativeElement as HTMLInputElement).value = raw;
+    this.syncControl();
+  }
+
+  // 4. Safety net for autofill / IME / programmatic writes
+  @HostListener('input')
+  onInput(): void {
+    const input = this.el.nativeElement as HTMLInputElement;
+    const clean = input.value.replace(/\\D/g, '');
+    if (input.value !== clean) {
+      const cursor = input.selectionStart ?? clean.length;
+      input.value  = clean;
+      input.setSelectionRange(cursor, cursor);
+    }
+    this.syncControl();
+  }
+
+  private insertAtCursor(text: string): void {
+    const input  = this.el.nativeElement as HTMLInputElement;
+    const start  = input.selectionStart ?? 0;
+    const end    = input.selectionEnd   ?? 0;
+    input.value  = input.value.slice(0, start) + text + input.value.slice(end);
+    input.setSelectionRange(start + text.length, start + text.length);
+  }
+
+  private syncControl(): void {
+    const control = this.ngControl?.control;
+    if (!control) return;
+    const hasNonDigits = /\\D/.test((this.el.nativeElement as HTMLInputElement).value);
+    const { noDecimals: _, ...rest } = control.errors ?? {};
+    control.setErrors(
+      hasNonDigits ? { ...rest, noDecimals: true }
+                   : Object.keys(rest).length ? rest : null
+    );
+  }
+}
+
+// Usage — works with reactive forms and template-driven forms alike:
+// <input formControlName="quantity" appDigitsOnly />
+// <input [(ngModel)]="qty" appDigitsOnly />`;
+
   readonly codeSnippet6 = `// TypeScript infers exact types from form structure
 import { FormControl, FormGroup } from '@angular/forms';
 

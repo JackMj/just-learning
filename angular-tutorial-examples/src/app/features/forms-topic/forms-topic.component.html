@@ -290,6 +290,63 @@
             </div>
           </div>
         </div>
+        <!-- Example 7: DigitsOnly Directive -->
+        <div class="example-container">
+          <div class="example-container__header">
+            <div class="example-number">7</div>
+            <h3>DigitsOnly Directive — blocking decimals at the source</h3>
+          </div>
+          <div class="example-container__body">
+            <app-code [code]="codeSnippet7" />
+            <div class="demo-area">
+              <p class="demo-label">Live Demo — try typing decimals, pasting "12.5", or dropping text</p>
+              <form [formGroup]="digitsForm" (ngSubmit)="submitDigits()" class="form">
+                <div class="form-group" [class.has-error]="quantityCtrl.invalid && quantityCtrl.touched">
+                  <label>Quantity <em style="font-size:0.75rem;opacity:.7">(integers only)</em></label>
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    formControlName="quantity"
+                    appDigitsOnly
+                    placeholder="e.g. 42"
+                  />
+                  @if (quantityCtrl.hasError('required') && quantityCtrl.touched) {
+                    <span class="error-message">Quantity is required</span>
+                  }
+                  @if (quantityCtrl.hasError('min') && quantityCtrl.touched) {
+                    <span class="error-message">Must be at least 1</span>
+                  }
+                  @if (quantityCtrl.hasError('noDecimals') && quantityCtrl.touched) {
+                    <span class="error-message">Only whole numbers are allowed</span>
+                  }
+                </div>
+                <div class="form-group" [class.has-error]="postalCtrl.invalid && postalCtrl.touched">
+                  <label>Postal Code <em style="font-size:0.75rem;opacity:.7">(5 digits)</em></label>
+                  <input
+                    type="text"
+                    formControlName="postalCode"
+                    appDigitsOnly
+                    placeholder="e.g. 90210"
+                    maxlength="5"
+                  />
+                  @if (postalCtrl.hasError('required') && postalCtrl.touched) {
+                    <span class="error-message">Postal code is required</span>
+                  }
+                  @if ((postalCtrl.hasError('minlength') || postalCtrl.hasError('maxlength')) && postalCtrl.touched) {
+                    <span class="error-message">Must be exactly 5 digits</span>
+                  }
+                </div>
+                <button class="btn btn--primary" type="submit">Place Order</button>
+              </form>
+              @if (digitsSubmitted()) {
+                <div class="result-display" style="margin-top:0.75rem;">
+                  Order placed: <code>{{ digitsSubmitted() | json }}</code>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <div class="exercise-box">
